@@ -68,6 +68,10 @@ public class Fleet {
         //lo elimino de la lista
         messages.remove(finalMessage);
 
+        //alineo el mensaje final con los otros mensajes
+        alignMessage(messages, finalMessage);
+        System.out.println("Mensaje final alineado: "+finalMessage);
+
         finalMessage = completeMessage(messages, finalMessage);
 
         finalMessage = removeShift(finalMessage);
@@ -101,17 +105,17 @@ public class Fleet {
                 if (finalMessage.containsAll(message)) {
                     auxMessages.remove(message);
                 } else {
-                    message.forEach((element) -> {
-                        if (!element.equals("") && finalMessage.contains(element)) {
-                            shift.set(message.indexOf(element) - finalMessage.indexOf(element));
+                    message.forEach((word) -> {
+                        if (!word.equals("") && finalMessage.contains(word)) {
+                            shift.set(message.indexOf(word) - finalMessage.indexOf(word));
                             hasShift.set(true);
                             System.out.println("shift: " + shift);
                         }
                     });
                     if (hasShift.get()) {
-                        message.forEach((element) -> {
-                            if (!element.equals("") && !finalMessage.contains(element)) {
-                                finalMessage.set(shift.intValue() + message.indexOf(element), element);
+                        message.forEach((word) -> {
+                            if (!word.equals("") && !finalMessage.contains(word)) {
+                                finalMessage.set(message.indexOf(word) -shift.get(), word);
                                 System.out.println("mensaje: " + finalMessage);
                             }
                         });
@@ -179,5 +183,21 @@ public class Fleet {
             aux.remove(0);
         }
         return aux;
+    }
+
+    private void alignMessage(List<List<String>> messages, List<String> finalMessage) {
+        for(List<String> message : messages) {
+            for(String word : message) {
+                if (word != "") {
+                    if (finalMessage.contains(word)) {
+                        while (finalMessage.indexOf(word) - message.indexOf(word) > 0) {
+                            if (finalMessage.get(0).equals("")) {
+                                finalMessage.remove(0);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

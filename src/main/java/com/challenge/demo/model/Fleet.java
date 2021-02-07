@@ -64,17 +64,16 @@ public class Fleet {
         List<List<String>> messages = new ArrayList<>(validateMessages(allMessages));
 
         //busco el mensaje con mas elementos
-        List<String> finalMessage= new ArrayList<>(searchBestMessage(messages));
+        List<String> finalMessage = new ArrayList<>(searchBestMessage(messages));
         //lo elimino de la lista
         messages.remove(finalMessage);
 
-        //alineo el mensaje final con los otros mensajes
+        //alineo el mensaje final
         alignMessage(messages, finalMessage);
-        System.out.println("Mensaje final alineado: "+finalMessage);
 
-        finalMessage = completeMessage(messages, finalMessage);
+        completeMessage(messages, finalMessage);
 
-        finalMessage = removeShift(finalMessage);
+        removeShift(finalMessage);
 
         if(finalMessage.contains("")) {
             throw new Exception(ERROR);
@@ -83,7 +82,7 @@ public class Fleet {
         return String.join(" ", finalMessage);
     }
 
-    private List<String> removeShift(List<String> finalMessage) {
+    private void removeShift(List<String> finalMessage) {
         if(finalMessage.get(0).equals("")) {
             finalMessage = deleteShift(finalMessage);
         } else if(finalMessage.get(finalMessage.size()-1).equals("")) {
@@ -91,13 +90,12 @@ public class Fleet {
             finalMessage = deleteShift(finalMessage);
             Collections.reverse(finalMessage);
         }
-        return finalMessage;
     }
 
-    private List<String> completeMessage(List<List<String>> messages, List<String> finalMessage) throws Exception {
+    private void completeMessage(List<List<String>> messages, List<String> finalMessage) throws Exception {
         List<List<String>> auxMessages = new ArrayList<>(messages);
 
-        for(int i = 0; auxMessages.size()!= 0 && i < messages.size() ; i++ ) {
+        for(int i = 0; auxMessages.size() != 0 && i < messages.size() ; i++ ) {
             for (List<String> message : messages) {
                 AtomicInteger shift = new AtomicInteger();
                 AtomicBoolean hasShift = new AtomicBoolean(false);
@@ -105,23 +103,11 @@ public class Fleet {
                 if (finalMessage.containsAll(message)) {
                     auxMessages.remove(message);
                 } else {
-                    message.forEach((word) -> {
-                        if (!word.equals("") && finalMessage.contains(word)) {
-                            shift.set(message.indexOf(word) - finalMessage.indexOf(word));
-                            hasShift.set(true);
-                            System.out.println("shift: " + shift);
-                        }
-                    });
+                    getShift(finalMessage, message, shift, hasShift);
                     if (hasShift.get()) {
-                        message.forEach((word) -> {
-                            if (!word.equals("") && !finalMessage.contains(word)) {
-                                finalMessage.set(message.indexOf(word) -shift.get(), word);
-                                System.out.println("mensaje: " + finalMessage);
-                            }
-                        });
+                        fillMessage(finalMessage, message, shift);
                         auxMessages.remove(message);
                     }
-                    System.out.println("messages 2: " + auxMessages.toString());
                     hasShift.set(false);
                 }
             }
@@ -129,8 +115,23 @@ public class Fleet {
         if(auxMessages.size()>0){
             throw new Exception(ERROR);
         }
+    }
 
-        return  finalMessage;
+    private void fillMessage(List<String> finalMessage, List<String> message, AtomicInteger shift) {
+        message.forEach((word) -> {
+            if (!word.equals("") && !finalMessage.contains(word)) {
+                finalMessage.set(message.indexOf(word) -shift.get(), word);
+            }
+        });
+    }
+
+    private void getShift(List<String> finalMessage, List<String> message, AtomicInteger shift, AtomicBoolean hasShift) {
+        message.forEach((word) -> {
+            if (!word.equals("") && finalMessage.contains(word)) {
+                shift.set(message.indexOf(word) - finalMessage.indexOf(word));
+                hasShift.set(true);
+            }
+        });
     }
 
     private List<List<String>> validateMessages(String[] ... allMessages) throws Exception {

@@ -2,12 +2,16 @@ package com.challenge.demo.model;
 
 import java.awt.geom.Point2D;
 import java.lang.Math;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Fleet {
     private Point2D.Float kenobi;
     private Point2D.Float skywalker;
     private Point2D.Float sato;  //lo declaro point para no crear una clase de datos.
     private final static float ERROR_RANGE = 0.01f;
+    private final static String ERROR = "404";
 
     public Fleet(){
         this.kenobi = new Point2D.Float(-500,-200);
@@ -15,7 +19,7 @@ public class Fleet {
         this.sato = new Point2D.Float(500, 100);
     }
 
-    public float[] GetLocation(float distKenobi, float distSkywalker, float distSato ) throws Exception {
+    public float[] getLocation(float distKenobi, float distSkywalker, float distSato ) throws Exception {
         float[] shipPosition = new float[2];
 
         double rangeKenobi = Math.pow(distKenobi, 2);
@@ -55,5 +59,125 @@ public class Fleet {
 
     }
 
+    public String getMessage( String[] ...allMessages) throws Exception {
 
+        List<List<String>> messages = new ArrayList<>(validateMessages(allMessages));
+
+        //busco el mensaje con mas elementos
+        List<String> finalMessage= new ArrayList<>(searchBestMessage(messages));
+        //lo elimino de la lista
+        messages.remove(finalMessage);
+
+        finalMessage = completeMessage(messages, finalMessage);
+
+        finalMessage = removeShift(finalMessage);
+
+        if(finalMessage.contains("")) {
+            throw new Exception(ERROR);
+        }
+
+        return String.join(" ", finalMessage);
+    }
+
+    private List<String> removeShift(List<String> finalMessage) {
+        if(finalMessage.get(0).equals("")) {
+            finalMessage = deleteShift(finalMessage);
+        } else if(finalMessage.get(finalMessage.size()-1).equals("")) {
+            Collections.reverse(finalMessage);
+            finalMessage = deleteShift(finalMessage);
+            Collections.reverse(finalMessage);
+        }
+        return finalMessage;
+    }
+
+    private List<String> completeMessage(List<List<String>> messages, List<String> finalMessage) throws Exception {
+        List<List<String>> auxMessages = new ArrayList<>(messages);
+
+        for(int i = 0; auxMessages.size()!= 0 && i < messages.size() ; i++ ) {
+            for (List<String> message : messages) {
+                AtomicInteger shift = new AtomicInteger();
+                AtomicBoolean hasShift = new AtomicBoolean(false);
+
+                if (finalMessage.containsAll(message)) {
+                    auxMessages.remove(message);
+                } else {
+                    message.forEach((element) -> {
+                        if (!element.equals("") && finalMessage.contains(element)) {
+                            shift.set(message.indexOf(element) - finalMessage.indexOf(element));
+                            hasShift.set(true);
+                            System.out.println("shift: " + shift);
+                        }
+                    });
+                    if (hasShift.get()) {
+                        message.forEach((element) -> {
+                            if (!element.equals("") && !finalMessage.contains(element)) {
+                                finalMessage.set(shift.intValue() + message.indexOf(element), element);
+                                System.out.println("mensaje: " + finalMessage);
+                            }
+                        });
+                        auxMessages.remove(message);
+                    }
+                    System.out.println("messages 2: " + auxMessages.toString());
+                    hasShift.set(false);
+                }
+            }
+        }
+        if(auxMessages.size()>0){
+            throw new Exception(ERROR);
+        }
+
+        return  finalMessage;
+    }
+
+    private List<List<String>> validateMessages(String[] ... allMessages) throws Exception {
+        List<List<String>> messages = new ArrayList<>();
+
+        //delete null message
+        for(String[] message : allMessages) {
+            if(message != null) {
+                List<String> aux = Arrays.asList(message);
+                messages.add(aux);
+            }
+        }
+
+        //Manejo de error
+        if(messages.isEmpty())
+            throw new Exception(ERROR);
+
+        List<List<String>> auxMessages = new ArrayList<>(messages);
+
+        //delete empty message
+        for(List<String> message : messages) {
+            int elements = message.size() - Collections.frequency(message, "");
+            if(elements == 0) {
+                auxMessages.remove(message);
+            }
+        }
+
+        return auxMessages;
+    }
+
+    private List<String> searchBestMessage(List<List<String>> messages) {
+        int maxElements = 0;
+        List<String> finalMessage = new ArrayList<>();
+
+        for(List<String> message : messages) {
+            int elements = message.size() - Collections.frequency(message, "");
+            if(elements > maxElements) {
+                maxElements = elements;
+                finalMessage = message;
+            }
+        }
+
+        return finalMessage;
+    }
+
+    private List<String> deleteShift(List<String> finalMessage) {
+        List<String> aux = finalMessage;
+
+        while(finalMessage.get(0).equals("")){
+            aux.remove(0);
+        }
+        return aux;
+    }
 }

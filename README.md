@@ -23,7 +23,7 @@ http://localhost:8080/swagger-ui.html
 
 
 
-###### Calculos auxiliares para realizar la triangulación.
+#### *Calculos auxiliares para realizar la triangulación.*
 
 La triangulación consiste en buscar el punto de intersección entre tres esferas. 
 Para este caso en particular se trabaja con 2D. Por lo tanto, se partirá con la ecuación de la circunsferencia:

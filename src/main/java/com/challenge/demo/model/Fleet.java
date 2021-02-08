@@ -1,9 +1,7 @@
 package com.challenge.demo.model;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.PrimitiveIterator;
 
 public class Fleet {
     List<Satelite> satelites = new ArrayList<>();
@@ -21,16 +19,13 @@ public class Fleet {
     public void updateSatelite(Satelite satelite) {
         boolean updated = false;
         for (Satelite element : satelites) {
-            System.out.println("element: "+element.getName());
             if (element.getName().equals(satelite.getName())) {
                 satelites.set(satelites.indexOf(element), satelite);
-                System.out.println("Aca satelite a updatear: "+satelite.getName());
                 updated = true;
             }
         }
         if(!updated){
             satelites.add(satelite);
-            System.out.println("se agrego: "+satelite.getName());
         }
     }
 

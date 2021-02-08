@@ -37,7 +37,8 @@ public class APIController {
     @PostMapping(value = "/api/v1/topsecret_split/{satelite_name}", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Ship> postSateliteData(@RequestBody SateliteSplit sateliteSplit, @PathVariable("satelite_name") String name){
 
-        Satelite satelite = new Satelite(name, sateliteSplit);
+        Satelite satelite = sateliteSplit.build(name);
+
         if(myCommunication == null) {
             myCommunication = new Communication();
             myfleet = new Fleet(myCommunication.getSatelites());

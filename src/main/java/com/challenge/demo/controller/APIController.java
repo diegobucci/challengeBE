@@ -35,16 +35,15 @@ public class APIController {
 
     @ApiOperation(value = "Send data from satelite", tags = "XWing")
     @PostMapping(value = "/api/v1/topsecret_split/{satelite_name}", consumes = "application/json", produces = "application/json")
-    public ResponseEntity postSateliteData(@RequestBody Satelite satelite){
+    public ResponseEntity<Ship> postSateliteData(@RequestBody SateliteSplit sateliteSplit, @PathVariable("satelite_name") String name){
 
+        Satelite satelite = new Satelite(name, sateliteSplit);
         if(myCommunication == null) {
             myCommunication = new Communication();
             myfleet = new Fleet(myCommunication.getSatelites());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         myfleet.updateSatelite(satelite);
-
-
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -54,15 +54,14 @@ public class APIController {
     public ResponseEntity<Ship> getShipData() {
         Ship response;
 
-        if(myfleet.getSateliteQuantity() < 3) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-
         try {
-            response = myCommunication.getHelpMessage(myfleet);
+            if(myfleet.getSateliteQuantity() < 3)
+                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            else {
+                response = myCommunication.getHelpMessage(myfleet);
+            }
         } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+          return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
         return new ResponseEntity<>(response, HttpStatus.OK);

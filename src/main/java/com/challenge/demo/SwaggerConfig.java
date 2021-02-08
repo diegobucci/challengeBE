@@ -6,8 +6,11 @@ import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.paths.RelativePathProvider;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import javax.servlet.ServletContext;
 
 import static com.google.common.base.Predicates.or;
 import static springfox.documentation.builders.PathSelectors.regex;
@@ -17,8 +20,14 @@ import static springfox.documentation.builders.PathSelectors.regex;
 public class SwaggerConfig {
 
     @Bean
-    public Docket postsApi() {
-        return new Docket(DocumentationType.SWAGGER_2).groupName("public-api")
+    public Docket postsApi(ServletContext servletContext) {
+        return new Docket(DocumentationType.SWAGGER_2).groupName("XWing")
+                .pathProvider(new RelativePathProvider(servletContext){
+                    @Override
+                    public String getApplicationBasePath() {
+                        return "https://challengebe.herokuapp.com";
+                    }
+                })
                 .apiInfo(apiInfo()).select().paths(postPaths()).build();
     }
 
@@ -29,6 +38,9 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder().title("ChallengeBE API")
                 .description("API reference for developers")
-                .version("1.0").build();
+                .version("1.0")
+                .license("domanicosharon@hotmail.com")
+                .build();
     }
+
 }

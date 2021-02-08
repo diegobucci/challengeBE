@@ -15,7 +15,7 @@ public class APIController {
     private static Fleet myfleet;
     private static Communication myCommunication;
 
-    @ApiOperation(value = "Get the position and the help message", tags = "XWing")
+    @ApiOperation(value = "Send data and get the position with the help message", tags = "XWing")
     @PostMapping(value = "/api/v1/topsecret", consumes = "application/json", produces = "application/json")
     @ApiResponses(value = {
     @ApiResponse(code = 200, message = "OK", response = Ship.class),

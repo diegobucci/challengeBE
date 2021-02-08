@@ -4,6 +4,11 @@
 
 Obtener la posición de la fuente del llamado de auxilio junto con el mensaje a partir de la información provista por los tres satelites: Sato, Kenobi y Skywalker.
 
+### Entregables
+
+* Codigo fuente
+* 
+
 #### **Calculos auxiliares para realizar la triangulación.**
 
 La triangulación consiste en buscar el punto de intersección entre tres esferas. 

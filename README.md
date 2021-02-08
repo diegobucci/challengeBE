@@ -16,6 +16,13 @@ http://localhost:8080/swagger-ui.html
 
 
 
+
+
+
+
+
+
+
 #### **Calculos auxiliares para realizar la triangulación.**
 
 La triangulación consiste en buscar el punto de intersección entre tres esferas. 

@@ -1,7 +1,29 @@
-# ChallengeBE
+# ChallengeBE - Operación Fuego de Quasar 
+
+## Objetivo
+
+Obtener la posición de la fuente del llamado de auxilio junto con el mensaje a partir de la información provista por los tres satelites: Sato, Kenobi y Skywalker.
+
+#### Ejecución del programa
 
 
-### **Calculos auxiliares para realizar la triangulación.**
+
+#### Documentación APIs con swagger
+
+http://localhost:8080/swagger-ui.html
+
+#### URL host
+
+
+
+
+
+
+
+
+
+
+#### *Calculos auxiliares para realizar la triangulación.*
 
 La triangulación consiste en buscar el punto de intersección entre tres esferas. 
 Para este caso en particular se trabaja con 2D. Por lo tanto, se partirá con la ecuación de la circunsferencia:

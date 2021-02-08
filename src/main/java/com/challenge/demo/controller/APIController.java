@@ -34,19 +34,22 @@ public class APIController {
     }
 
     @ApiOperation(value = "Send data from satelite", tags = "XWing")
-    @PostMapping(value = "/api/v1/topsecret_split/{satelite_name}", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Ship> postSateliteData(@RequestBody SateliteSplit sateliteSplit, @PathVariable("satelite_name") String name){
+    @PostMapping(value = "/api/v1/topsecret_split/{satelite_name}", consumes = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = String.class),
+            @ApiResponse(code = 404, message = "ERROR", response = String.class)})
+    public ResponseEntity postSateliteData(@RequestBody SateliteSplit sateliteSplit, @PathVariable("satelite_name") String name){
 
         Satelite satelite = sateliteSplit.build(name);
 
         if(myCommunication == null) {
             myCommunication = new Communication();
-            myfleet = new Fleet(myCommunication.getSatelites());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            myfleet = new Fleet(satelite);
         }
-        myfleet.updateSatelite(satelite);
+        else
+            myfleet.updateSatelite(satelite);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @ApiOperation(value = "Get ship position and help message", tags = "XWing")

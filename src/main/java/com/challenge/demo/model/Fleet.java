@@ -1,31 +1,44 @@
 package com.challenge.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @ApiModel(value = "Satellites")
-public class Fleet {
-    private List<Satellite> satellites;
+public class Fleet implements Serializable {
+    @JsonProperty
+    @ApiModelProperty(required = true, position = 1)
+    private List<Satellite> satellites = new ArrayList<>();
 
+    public Fleet() {
+
+    }
     public Fleet(List<Satellite> allSatellites) {
-        satellites = allSatellites;
+        this.satellites = allSatellites;
     }
 
+    @JsonIgnore
     public int getSatelliteQuantity(){
         return satellites.size();
     }
 
     public void addSatellite(Satellite satellite) throws Exception {
-        for (Satellite element : satellites) {
-            if (element.getName().equals(satellite.getName())) {
-                throw new Exception("This satellite already exist");
+        if(!satellites.isEmpty()) {
+            for (Satellite element : satellites) {
+                if (element.getName().equals(satellite.getName())) {
+                    throw new Exception("This satellite already exist");
+                }
             }
         }
         satellites.add(satellite);
     }
 
+    @JsonIgnore
     public float[] getAllDistances() {
         float[] distances = new float[3];
         int i = 0;
@@ -40,6 +53,7 @@ public class Fleet {
         return distances;
     }
 
+    @JsonIgnore
     public String[][] getAllMessages() {
         List<String []> messages = new ArrayList<>();
 

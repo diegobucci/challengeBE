@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class APIController {
@@ -21,15 +22,15 @@ public class APIController {
     @ApiResponses(value = {
     @ApiResponse(code = 200, message = "OK", response = Ship.class),
     @ApiResponse(code = 404, message = "ERROR", response = String.class)})
-    public ResponseEntity<Ship> postFleetData(@RequestBody List<Satellite> satellites) {
-        return apiService.postFleetDataService(satellites);
+    public ResponseEntity<Ship> postFleetData(@RequestBody Fleet fleet) {
+        return apiService.postFleetDataService(fleet);
     }
 
     @ApiOperation(value = "Send data from satelite", tags = "XWing")
     @PostMapping(value = "/api/v1/topsecret_split/{satellite_name}", consumes = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "CREATED", response = String.class),
-            @ApiResponse(code = 404, message = "ERROR", response = String.class)})
+            @ApiResponse(code = 409, message = "CONFLICT", response = String.class)})
     public ResponseEntity postSatelliteData(@RequestBody SatelliteSplit satelliteSplit, @PathVariable("satellite_name") String name){
         return apiService.postSatelliteDataService(satelliteSplit, name);
     }

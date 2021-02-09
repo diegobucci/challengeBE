@@ -1,6 +1,7 @@
 package com.challenge.demo;
 
 import com.challenge.demo.util.Communication;
+import com.challenge.demo.util.Message;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,7 +17,7 @@ class GetMessageTest {
         String [] msg3 = {"este", "", "un",""};
 
         try {
-            helpMessage = Communication.getMessage(msg1, msg2, msg3);
+            helpMessage = Message.getMessage(msg1, msg2, msg3);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -31,7 +32,7 @@ class GetMessageTest {
         String [] msg3 = {"este", "", "un","", "","",""};
 
         try {
-            helpMessage = Communication.getMessage(msg1, msg2, msg3);
+            helpMessage = Message.getMessage(msg1, msg2, msg3);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -44,7 +45,7 @@ class GetMessageTest {
         String [] msg2 = {"","","", "es", "un", ""};
         String [] msg3 = {"este", "", "un","", "","",""};
 
-        assertThrows(Exception.class, ()-> Communication.getMessage(msg1, msg2, msg3));
+        assertThrows(Exception.class, ()-> Message.getMessage(msg1, msg2, msg3));
     }
 
     @Test
@@ -53,7 +54,7 @@ class GetMessageTest {
         String [] msg2 = {"","","", "es", "", ""};
         String [] msg3 = {"este", "", "un","", "","",""};
 
-        assertThrows(Exception.class, ()-> Communication.getMessage(msg1, msg2, msg3));
+        assertThrows(Exception.class, ()-> Message.getMessage(msg1, msg2, msg3));
     }
 
 }

@@ -1,6 +1,5 @@
 package com.challenge.demo.service;
 
-import com.challenge.demo.controller.APIController;
 import com.challenge.demo.model.Satellite;
 import com.challenge.demo.model.SatelliteSplit;
 import com.challenge.demo.util.Communication;
@@ -19,19 +18,17 @@ public class APIService {
     private Fleet myFleet;
     private Logger logger = LoggerFactory.getLogger(APIService.class);
 
-    public ResponseEntity<Ship> postFleetDataService(List<Satellite> satellites) {
+    public ResponseEntity<Ship> postFleetDataService(Fleet fleet) {
         Ship response;
 
-        myFleet = new Fleet(satellites);
-        System.out.println("ACA!");
+        myFleet = fleet;
         try {
             response = Communication.getHelpMessage(myFleet);
-            System.out.println("Response "+response);
         } catch (Exception e) {
             logger.info("Response not found");
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 
     public ResponseEntity<Ship> getShipDataService() {
@@ -39,28 +36,28 @@ public class APIService {
 
         try {
             if(myFleet.getSatelliteQuantity() < 3)
-                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             else {
                 response = Communication.getHelpMessage(myFleet);
             }
         } catch (Exception e) {
             logger.info("Response not found");
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 
     public ResponseEntity postSatelliteDataService(SatelliteSplit satelliteSplit, String name) {
         Satellite satellite = satelliteSplit.build(name);
-
         try {
+            if(myFleet == null) myFleet = new Fleet();
             myFleet.addSatellite(satellite);
         } catch (Exception e) {
             logger.info("Error, can't create satelite");
-            return new ResponseEntity(HttpStatus.CONFLICT);
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
-        return new ResponseEntity(HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

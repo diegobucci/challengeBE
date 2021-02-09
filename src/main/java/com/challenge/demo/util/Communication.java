@@ -3,13 +3,11 @@ package com.challenge.demo.util;
 import com.challenge.demo.exception.ShipNotFoundException;
 import com.challenge.demo.model.Fleet;
 import com.challenge.demo.model.Ship;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Communication {
     private final static float ERROR_RANGE = 0.01f;
@@ -18,8 +16,37 @@ public class Communication {
     private static Point2D.Float skywalker = new Point2D.Float(100,-100);
     private static Point2D.Float sato = new Point2D.Float(500,100);
 
-    public Communication() throws Exception {
-        throw new Exception("This class can't be instanced");
+    private static Logger logger = LoggerFactory.getLogger(Communication.class);
+
+    public static Ship getHelpMessage(Fleet myFleet) throws Exception {
+        float[] resp;
+        String helpMessage;
+
+        try {
+            //Los valores que hacen cumplir la condición son => DisKenobi = 583.1f, DistSkywalker = 500f, DistSato = 728f
+            resp = getLocation(myFleet.getAllDistances());
+            helpMessage = Message.getMessage(myFleet.getAllMessages());
+        } catch (Exception e) {
+            logger.info("Can't generate message and position");
+            throw new Exception();
+        }
+
+        return new Ship(resp[0], resp[1], helpMessage);
+    }
+
+    private static boolean validateDistances(float[] distances, List<Double> ratios) {
+        ///convert to double
+        for(float ratio : distances) {
+            ratios.add((double)ratio);
+        }
+        //Manejo de error
+        return !(ratios.isEmpty() | ratios.size() != 3);
+    }
+
+    private static boolean validateSolution(float[] shipPosition, Point2D.Float satelite, double range){
+        float calculatedRange = (float) (Math.pow( shipPosition[0] - satelite.getX() , 2) + Math.pow( shipPosition[1] - satelite.getY() , 2));
+        return (Math.abs(calculatedRange - range)/range < ERROR_RANGE);
+
     }
 
     public static float[] getLocation(float ... distances) throws Exception {
@@ -57,38 +84,6 @@ public class Communication {
         }
 
         return shipPosition;
-
-    }
-
-    public static Ship getHelpMessage(Fleet myfleet) {
-        float[] resp;
-        String helpMessage;
-
-        try {
-            //Los valores que hacen cumplir la condición son => DisKenobi = 583.1f, DistSkywalker = 500f, DistSato = 728f
-            resp = getLocation(myfleet.getAllDistances());
-            helpMessage = MessageCommunication.getMessage(myfleet.getAllMessages());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        return new Ship(resp[0], resp[1], helpMessage);
-    }
-
-    private static boolean validateDistances(float[] distances, List<Double> ratios) {
-        ///convert to double
-        for(float ratio : distances) {
-            ratios.add((double)ratio);
-        }
-        //Manejo de error
-        return !(ratios.isEmpty() | ratios.size() != 3);
-    }
-
-    private static boolean validateSolution(float[] shipPosition, Point2D.Float satelite, double range){
-        float calculatedRange = (float) (Math.pow( shipPosition[0] - satelite.getX() , 2) + Math.pow( shipPosition[1] - satelite.getY() , 2));
-        return (Math.abs(calculatedRange - range)/range < ERROR_RANGE);
 
     }
 

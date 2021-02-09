@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MessageCommunication {
+public class Message {
 
     public static String getMessage( String[] ...allMessages) throws Exception {
         List<List<String>> messages = new ArrayList<>(validateMessages(allMessages));

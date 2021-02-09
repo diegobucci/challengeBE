@@ -4,8 +4,6 @@
 
 Obtener la posición de la fuente del llamado de auxilio junto con el mensaje a partir de la información provista por los tres satelites: Sato, Kenobi y Skywalker.
 
-### Ejecución del programa
-
 #### Documentación APIs con swagger
 
 https://challengebe.herokuapp.com/swagger-ui.html

@@ -1,6 +1,5 @@
 package com.challenge.demo.util;
 
-import com.challenge.demo.exception.NegativeDistanceException;
 import com.challenge.demo.exception.ShipNotFoundException;
 import com.challenge.demo.model.Fleet;
 import com.challenge.demo.model.Ship;
@@ -29,35 +28,34 @@ public class Communication {
             helpMessage = Message.getMessage(myFleet.getAllMessages());
         } catch (Exception e) {
             logger.info("Can't generate message and position");
-            throw new ShipNotFoundException();
+            throw new Exception();
         }
 
         return new Ship(resp[0], resp[1], helpMessage);
     }
 
-    private static void validateDistances(float[] distances, List<Double> ratios) throws Exception {
+    private static boolean validateDistances(float[] distances, List<Double> ratios) {
         ///convert to double
-        for(float distance : distances) {
-            if(distance < 0)
-                throw new NegativeDistanceException();
-
-            ratios.add((double)distance);
+        for(float ratio : distances) {
+            ratios.add((double)ratio);
         }
         //Manejo de error
-        if(!(ratios.isEmpty() | ratios.size() != 3))
-            throw new ShipNotFoundException();
+        return !(ratios.isEmpty() | ratios.size() != 3);
     }
 
     private static boolean validateSolution(float[] shipPosition, Point2D.Float satelite, double range){
         float calculatedRange = (float) (Math.pow( shipPosition[0] - satelite.getX() , 2) + Math.pow( shipPosition[1] - satelite.getY() , 2));
         return (Math.abs(calculatedRange - range)/range < ERROR_RANGE);
+
     }
 
     public static float[] getLocation(float ... distances) throws Exception {
         float[] shipPosition = new float[2];
         List<Double> ratios = new ArrayList<>();
 
-        validateDistances(distances, ratios);
+        if(!validateDistances(distances, ratios)){
+            throw new ShipNotFoundException();
+        }
 
         double rangeKenobi = Math.pow(ratios.get(0), 2);
         double rangeSkywalker = Math.pow(ratios.get(1), 2);
@@ -82,10 +80,11 @@ public class Communication {
         shipPosition[1] = (float) (( interceptY1/2 ) - ( slope1*shipPosition[0] ));
 
         if(!validateSolution(shipPosition, kenobi, rangeKenobi) && !validateSolution(shipPosition, skywalker, rangeSkywalker) && !validateSolution(shipPosition, sato, rangeSato)){
-            throw new ShipNotFoundException();
+            throw new Exception();
         }
 
         return shipPosition;
+
     }
 
 }

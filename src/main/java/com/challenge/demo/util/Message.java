@@ -1,8 +1,5 @@
 package com.challenge.demo.util;
 
-import com.challenge.demo.exception.InvalidMessagesException;
-import com.challenge.demo.exception.MessageNotFoundException;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,8 +14,10 @@ public class Message {
 
         //busco el mensaje con mas elementos
         List<String> finalMessage = new ArrayList<>(searchBestMessage(messages));
+        //lo elimino de la lista
+        messages.remove(finalMessage);
 
-        //alineo el mensaje final con los siguientes
+        //alineo el mensaje final
         alignMessage(messages, finalMessage);
 
         completeMessage(messages, finalMessage);
@@ -26,7 +25,7 @@ public class Message {
         removeShift(finalMessage);
 
         if(finalMessage.contains("")) {
-            throw new MessageNotFoundException();
+            throw new Exception();
         }
 
         return String.join(" ", finalMessage);
@@ -39,15 +38,25 @@ public class Message {
         for(String[] message : allMessages) {
             if(message != null) {
                 List<String> aux = Arrays.asList(message);
-                if ((aux.size() - Collections.frequency(aux, "")) > 0)
-                    messages.add(aux);
+                messages.add(aux);
             }
         }
 
+        //Manejo de error
         if(messages.isEmpty())
-            throw new InvalidMessagesException();
+            throw new Exception();
 
-        return messages;
+        List<List<String>> auxMessages = new ArrayList<>(messages);
+
+        //delete empty message
+        for(List<String> message : messages) {
+            int elements = message.size() - Collections.frequency(message, "");
+            if(elements == 0) {
+                auxMessages.remove(message);
+            }
+        }
+
+        return auxMessages;
     }
 
     private static List<String> searchBestMessage(List<List<String>> messages) {
@@ -61,8 +70,6 @@ public class Message {
                 finalMessage = message;
             }
         }
-        //lo elimino de la lista
-        messages.remove(finalMessage);
 
         return finalMessage;
     }
@@ -77,14 +84,17 @@ public class Message {
     }
 
     private static void alignMessage(List<List<String>> messages, List<String> finalMessage) {
-        messages.forEach(message -> {
-            message.forEach(word -> {
+        for(List<String> message : messages) {
+            for(String word : message) {
                 if (!word.equals("") && finalMessage.contains(word)) {
-                    while ((finalMessage.indexOf(word) - message.indexOf(word) > 0) && finalMessage.get(0).equals("") )
-                         finalMessage.remove(0);
+                    while (finalMessage.indexOf(word) - message.indexOf(word) > 0) {
+                        if (finalMessage.get(0).equals("")) {
+                            finalMessage.remove(0);
+                        }
+                    }
                 }
-            });
-        });
+            }
+        }
     }
 
     private static void removeShift(List<String> finalMessage) {
@@ -117,8 +127,8 @@ public class Message {
                 }
             }
         }
-        if(auxMessages.size()>0){//si hay un mensaje que no pudo ser eliminado
-            throw new InvalidMessagesException();
+        if(auxMessages.size()>0){
+            throw new Exception();
         }
     }
 

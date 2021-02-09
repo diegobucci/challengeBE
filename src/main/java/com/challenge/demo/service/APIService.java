@@ -11,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class APIService {
     private Fleet myFleet;
@@ -48,16 +46,16 @@ public class APIService {
         return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity postSatelliteDataService(SatelliteSplit satelliteSplit, String name) {
+    public HttpStatus postSatelliteDataService(SatelliteSplit satelliteSplit, String name) {
         Satellite satellite = satelliteSplit.build(name);
         try {
             if(myFleet == null) myFleet = new Fleet();
             myFleet.addSatellite(satellite);
         } catch (Exception e) {
-            logger.info("Error, can't create satelite");
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            logger.info("Error, can't create satellite");
+            return HttpStatus.NOT_FOUND;
         }
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return HttpStatus.CREATED;
     }
 }

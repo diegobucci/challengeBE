@@ -10,9 +10,9 @@ import java.io.Serializable;
 @ApiModel(value = "Ship data")
 public class Ship implements Serializable {
 
-    @ApiModelProperty(value="Ship position", required=true, position=1)
+    @ApiModelProperty(value = "Ship position", required = true, position = 1)
     private Point2D.Float position;
-    @ApiModelProperty(value="Help message", required=true, example="este es un mensaje de auxilio", position=2)
+    @ApiModelProperty(value = "Help message", required = true, example = "este es un mensaje de auxilio", position = 2)
     private String message;
 
     public Ship(float x, float y, String message){

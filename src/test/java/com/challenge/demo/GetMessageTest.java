@@ -1,5 +1,6 @@
 package com.challenge.demo;
 
+import com.challenge.demo.exception.InvalidMessagesException;
 import com.challenge.demo.util.Communication;
 import com.challenge.demo.util.Message;
 import org.junit.jupiter.api.Test;
@@ -55,6 +56,30 @@ class GetMessageTest {
         String [] msg3 = {"este", "", "un","", "","",""};
 
         assertThrows(Exception.class, ()-> Message.getMessage(msg1, msg2, msg3));
+    }
+
+    @Test
+    void testSetMessageInvalid() {
+        String [] msg1 = null;
+        String [] msg2 = null;
+        String [] msg3 = null;
+
+        assertThrows(InvalidMessagesException.class, ()-> Message.getMessage(msg1, msg2, msg3));
+    }
+
+    @Test
+    void testSetNullMessageValidResponse() {
+        String helpMessage = "";
+        String [] msg1 = null;
+        String [] msg2 = {"","","", "es", "un", ""};
+        String [] msg3 = {"este", "es", "un","", "","",""};
+
+        try {
+            helpMessage = Message.getMessage(msg1, msg2, msg3);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertEquals("este es un",helpMessage);
     }
 
 }

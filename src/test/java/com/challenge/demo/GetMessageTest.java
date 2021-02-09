@@ -1,25 +1,22 @@
 package com.challenge.demo;
 
-import com.challenge.demo.model.Communication;
-import com.challenge.demo.model.Fleet;
-import com.challenge.demo.model.Ship;
+import com.challenge.demo.util.Communication;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class GetMessageTest {
-    private Communication com = new Communication();
+class GetMessageTest {
 
     @Test
-    public void testGetMessageValidWith2Coincidence() {
-        String helpMessage = new String();
+    void testGetMessageValidWith2Coincidence() {
+        String helpMessage = null;
         String [] msg1 = {"este", "", "", "mensaje"};
         String [] msg2 = {"", "es", "un", ""};
         String [] msg3 = {"este", "", "un",""};
 
         try {
-            helpMessage = com.getMessage(msg1, msg2, msg3);
+            helpMessage = Communication.getMessage(msg1, msg2, msg3);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -27,14 +24,14 @@ public class GetMessageTest {
     }
 
     @Test
-    public void testGetMessageValidWithLeftAndRightShift() {
-        String helpMessage = new String();
+    void testGetMessageValidWithLeftAndRightShift() {
+        String helpMessage = "";
         String [] msg1 = {"","","este", "", "", "mensaje"};
         String [] msg2 = {"","","", "es", "un", ""};
         String [] msg3 = {"este", "", "un","", "","",""};
 
         try {
-            helpMessage = com.getMessage(msg1, msg2, msg3);
+            helpMessage = Communication.getMessage(msg1, msg2, msg3);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -42,21 +39,21 @@ public class GetMessageTest {
     }
 
     @Test
-    public void testGetMessageInvalid() {
+    void testGetMessageInvalid() {
         String [] msg1 = {"","","", "", "", "mensaje"};
         String [] msg2 = {"","","", "es", "un", ""};
         String [] msg3 = {"este", "", "un","", "","",""};
 
-        assertThrows(Exception.class, ()-> com.getMessage(msg1, msg2, msg3));
+        assertThrows(Exception.class, ()-> Communication.getMessage(msg1, msg2, msg3));
     }
 
     @Test
-    public void testGetMessageInvalidNoCoincidence() {
+    void testGetMessageInvalidNoCoincidence() {
         String [] msg1 = {"","","", "", "", "mensaje"};
         String [] msg2 = {"","","", "es", "", ""};
         String [] msg3 = {"este", "", "un","", "","",""};
 
-        assertThrows(Exception.class, ()-> com.getMessage(msg1, msg2, msg3));
+        assertThrows(Exception.class, ()-> Communication.getMessage(msg1, msg2, msg3));
     }
 
 }

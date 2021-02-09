@@ -1,6 +1,6 @@
 package com.challenge.demo;
 
-import com.challenge.demo.model.Communication;
+import com.challenge.demo.util.Communication;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -9,14 +9,12 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class GetLocationTests {
 
-    private Communication com = new Communication();
-
     @Test
-    public void testGetLocationValidPoint() {
+    void testGetLocationValidPoint() {
         float[] position = new float[2];
         float[] expected = {-200f, 300f};
         try {
-            position = com.getLocation(583.2f, 500,728);
+            position = Communication.getLocation(583.2f, 500,728);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -25,8 +23,8 @@ class GetLocationTests {
     }
 
     @Test
-    public void testGetLocationInvalidPoint() {
-        assertThrows(Exception.class, ()-> com.getLocation(53.2f, 500,728));
+    void testGetLocationInvalidPoint() {
+        assertThrows(Exception.class, ()-> Communication.getLocation(53.2f, 500,728));
     }
 
 }

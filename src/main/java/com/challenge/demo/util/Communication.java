@@ -1,14 +1,9 @@
-package com.challenge.demo.model;
+package com.challenge.demo.util;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
-
+import com.challenge.demo.exception.ShipNotFoundException;
+import com.challenge.demo.model.Fleet;
+import com.challenge.demo.model.Ship;
 import java.awt.geom.Point2D;
-import java.io.Serializable;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,32 +11,23 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@ApiModel(value = "satelites")
-public class Communication implements Serializable {
-    @ApiModelProperty(required = true)
-    private Satelite[] satelites;
+public class Communication {
     private final static float ERROR_RANGE = 0.01f;
-    private final static String ERROR = "404";
 
-    private Point2D.Float kenobi = new Point2D.Float(-500,-200);
-    private Point2D.Float skywalker = new Point2D.Float(100,-100);
-    private Point2D.Float sato = new Point2D.Float(500,100);
+    private static Point2D.Float kenobi = new Point2D.Float(-500,-200);
+    private static Point2D.Float skywalker = new Point2D.Float(100,-100);
+    private static Point2D.Float sato = new Point2D.Float(500,100);
 
-    public Communication(){}
-    public Communication(Satelite... satelites) {
-        this.satelites =  satelites;
+    public Communication() throws Exception {
+        throw new Exception("This class can't be instanced");
     }
 
-    public Satelite[] getSatelites() {
-        return satelites;
-    }
-
-    public float[] getLocation(float ... distances) throws Exception {
+    public static float[] getLocation(float ... distances) throws Exception {
         float[] shipPosition = new float[2];
         List<Double> ratios = new ArrayList<>();
 
         if(!validateDistances(distances, ratios)){
-            throw new Exception(ERROR);
+            throw new ShipNotFoundException();
         }
 
         double rangeKenobi = Math.pow(ratios.get(0), 2);
@@ -67,14 +53,14 @@ public class Communication implements Serializable {
         shipPosition[1] = (float) (( interceptY1/2 ) - ( slope1*shipPosition[0] ));
 
         if(!validateSolution(shipPosition, kenobi, rangeKenobi) && !validateSolution(shipPosition, skywalker, rangeSkywalker) && !validateSolution(shipPosition, sato, rangeSato)){
-            throw new Exception(ERROR);
+            throw new Exception();
         }
 
         return shipPosition;
 
     }
 
-    public String getMessage( String[] ...allMessages) throws Exception {
+    public static String getMessage( String[] ...allMessages) throws Exception {
         List<List<String>> messages = new ArrayList<>(validateMessages(allMessages));
 
         //busco el mensaje con mas elementos
@@ -90,15 +76,15 @@ public class Communication implements Serializable {
         removeShift(finalMessage);
 
         if(finalMessage.contains("")) {
-            throw new Exception(ERROR);
+            throw new Exception();
         }
 
         return String.join(" ", finalMessage);
     }
 
-    public Ship getHelpMessage(Fleet myfleet) {
-        float resp [] = new float[0];
-        String helpMessage = new String();
+    public static Ship getHelpMessage(Fleet myfleet) {
+        float[] resp;
+        String helpMessage;
 
         try {
             //Los valores que hacen cumplir la condición son => DisKenobi = 583.1f, DistSkywalker = 500f, DistSato = 728f
@@ -113,16 +99,13 @@ public class Communication implements Serializable {
         return new Ship(resp[0], resp[1], helpMessage);
     }
 
-    private boolean validateDistances(float[] distances, List<Double> ratios) {
+    private static boolean validateDistances(float[] distances, List<Double> ratios) {
         ///convert to double
         for(float ratio : distances) {
             ratios.add((double)ratio);
         }
         //Manejo de error
-        if(ratios.isEmpty() | ratios.size() != 3)
-            return false;
-
-        return true;
+        return !(ratios.isEmpty() | ratios.size() != 3);
     }
 
     private static boolean validateSolution(float[] shipPosition, Point2D.Float satelite, double range){
@@ -131,7 +114,7 @@ public class Communication implements Serializable {
 
     }
 
-    private List<List<String>> validateMessages(String[] ... allMessages) throws Exception {
+    private static List<List<String>> validateMessages(String[]... allMessages) throws Exception {
         List<List<String>> messages = new ArrayList<>();
 
         //delete null message
@@ -144,7 +127,7 @@ public class Communication implements Serializable {
 
         //Manejo de error
         if(messages.isEmpty())
-            throw new Exception(ERROR);
+            throw new Exception();
 
         List<List<String>> auxMessages = new ArrayList<>(messages);
 
@@ -159,7 +142,7 @@ public class Communication implements Serializable {
         return auxMessages;
     }
 
-    private List<String> searchBestMessage(List<List<String>> messages) {
+    private static List<String> searchBestMessage(List<List<String>> messages) {
         int maxElements = 0;
         List<String> finalMessage = new ArrayList<>();
 
@@ -174,19 +157,19 @@ public class Communication implements Serializable {
         return finalMessage;
     }
 
-    private List<String> deleteShift(List<String> finalMessage) {
+    private static void deleteShift(List<String> finalMessage) {
         List<String> aux = finalMessage;
 
         while(finalMessage.get(0).equals("")){
             aux.remove(0);
         }
-        return aux;
+        finalMessage = aux;
     }
 
-    private void alignMessage(List<List<String>> messages, List<String> finalMessage) {
+    private static void alignMessage(List<List<String>> messages, List<String> finalMessage) {
         for(List<String> message : messages) {
             for(String word : message) {
-                if (word != "" && finalMessage.contains(word)) {
+                if (!word.equals("") && finalMessage.contains(word)) {
                     while (finalMessage.indexOf(word) - message.indexOf(word) > 0) {
                         if (finalMessage.get(0).equals("")) {
                             finalMessage.remove(0);
@@ -197,17 +180,17 @@ public class Communication implements Serializable {
         }
     }
 
-    private void removeShift(List<String> finalMessage) {
+    private static void removeShift(List<String> finalMessage) {
         if(finalMessage.get(0).equals("")) {
-            finalMessage = deleteShift(finalMessage);
+            deleteShift(finalMessage);
         } else if(finalMessage.get(finalMessage.size()-1).equals("")) {
             Collections.reverse(finalMessage);
-            finalMessage = deleteShift(finalMessage);
+            deleteShift(finalMessage);
             Collections.reverse(finalMessage);
         }
     }
 
-    private void completeMessage(List<List<String>> messages, List<String> finalMessage) throws Exception {
+    private static void completeMessage(List<List<String>> messages, List<String> finalMessage) throws Exception {
         List<List<String>> auxMessages = new ArrayList<>(messages);
 
         for(int i = 0; auxMessages.size() != 0 && i < messages.size() ; i++ ) {
@@ -228,11 +211,11 @@ public class Communication implements Serializable {
             }
         }
         if(auxMessages.size()>0){
-            throw new Exception(ERROR);
+            throw new Exception();
         }
     }
 
-    private void fillMessage(List<String> finalMessage, List<String> message, AtomicInteger shift) {
+    private static void fillMessage(List<String> finalMessage, List<String> message, AtomicInteger shift) {
         message.forEach((word) -> {
             if (!word.equals("") && !finalMessage.contains(word)) {
                 finalMessage.set(message.indexOf(word) -shift.get(), word);
@@ -240,7 +223,7 @@ public class Communication implements Serializable {
         });
     }
 
-    private void getShift(List<String> finalMessage, List<String> message, AtomicInteger shift, AtomicBoolean hasShift) {
+    private static void getShift(List<String> finalMessage, List<String> message, AtomicInteger shift, AtomicBoolean hasShift) {
         message.forEach((word) -> {
             if (!word.equals("") && finalMessage.contains(word)) {
                 shift.set(message.indexOf(word) - finalMessage.indexOf(word));

@@ -4,13 +4,13 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 
-public class SateliteSplit implements Serializable {
+public class SatelliteSplit implements Serializable {
     @ApiModelProperty(value = "Distance to ship", required = true, example = "100" , position = 2)
-    float distance;
+    private float distance;
     @ApiModelProperty(value = "Array of messages", required = true, example = "['este','es','', '', ]" , position = 3)
-    String [] message;
+    private String [] message;
 
-    public SateliteSplit(float distance, String[] message) {
+    public SatelliteSplit(float distance, String[] message) {
         this.distance = distance;
         this.message = message;
     }
@@ -23,8 +23,8 @@ public class SateliteSplit implements Serializable {
         return this.message;
     }
 
-    public Satelite build(String name) {
-        return new Satelite(name, distance, message);
+    public Satellite build(String name) {
+        return new Satellite(name, distance, message);
     }
 
 }

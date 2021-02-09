@@ -1,44 +1,41 @@
 package com.challenge.demo.model;
 
+import io.swagger.annotations.ApiModel;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@ApiModel(value = "Satellites")
 public class Fleet {
-    List<Satelite> satelites = new ArrayList<>();
+    private List<Satellite> satellites;
 
-    public Fleet(Satelite ... allSatelites) {
-        for(int i= 0 ; i< allSatelites.length; i++) {
-            satelites.add(allSatelites[i]);
-        }
+    public Fleet(List<Satellite> allSatellites) {
+        satellites = allSatellites;
     }
 
-    public int getSateliteQuantity(){
-        return satelites.size();
+    public int getSatelliteQuantity(){
+        return satellites.size();
     }
 
-    public void updateSatelite(Satelite satelite) {
-        boolean updated = false;
-        for (Satelite element : satelites) {
-            if (element.getName().equals(satelite.getName())) {
-                satelites.set(satelites.indexOf(element), satelite);
-                updated = true;
+    public void addSatellite(Satellite satellite) throws Exception {
+        for (Satellite element : satellites) {
+            if (element.getName().equals(satellite.getName())) {
+                throw new Exception("This satellite already exist");
             }
         }
-        if(!updated){
-            satelites.add(satelite);
-        }
+        satellites.add(satellite);
     }
 
     public float[] getAllDistances() {
         float[] distances = new float[3];
         int i = 0;
-        for (Satelite satelite : satelites) {
-            if(satelite.getName().equals("kenobi"))
-                distances[0] = satelite.getDistance();
-            else if(satelite.getName().equals("skywalker"))
-                distances[1] = satelite.getDistance();
+        for (Satellite satellite : satellites) {
+            if(satellite.getName().equals("kenobi"))
+                distances[0] = satellite.getDistance();
+            else if(satellite.getName().equals("skywalker"))
+                distances[1] = satellite.getDistance();
             else
-                distances[2] = satelite.getDistance();
+                distances[2] = satellite.getDistance();
         }
         return distances;
     }
@@ -46,8 +43,8 @@ public class Fleet {
     public String[][] getAllMessages() {
         List<String []> messages = new ArrayList<>();
 
-        for (Satelite satelite : satelites) {
-            messages.add(satelite.getMessage());
+        for (Satellite satellite : satellites) {
+            messages.add(satellite.getMessage());
         }
 
         return messages.toArray(new String[3][]);

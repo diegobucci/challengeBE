@@ -26,7 +26,7 @@ public class APIController {
     @ApiOperation(value = "Send data from satelite", tags = "XWing")
     @PostMapping(value = "/api/v1/topsecret_split/{satellite_name}", consumes = "application/json")
     @ResponseStatus(code = HttpStatus.CREATED)
-    @ApiResponses(value = @ApiResponse(code = 404, message = "ERROR", response = String.class))
+    @ApiResponses(value = @ApiResponse(code = 409, message = "CONFLICT", response = String.class))
     public HttpStatus postSatelliteData(@RequestBody SatelliteSplit satelliteSplit, @PathVariable("satellite_name") String name){
         return apiService.postSatelliteDataService(satelliteSplit, name);
     }

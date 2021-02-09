@@ -53,7 +53,7 @@ public class APIService {
             myFleet.addSatellite(satellite);
         } catch (Exception e) {
             logger.info("Error, can't create satellite");
-            return HttpStatus.NOT_FOUND;
+            return HttpStatus.CONFLICT;
         }
 
         return HttpStatus.CREATED;

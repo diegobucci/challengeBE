@@ -14,6 +14,11 @@ https://challengebe.herokuapp.com/swagger-ui.html
 
 https://challengebe.herokuapp.com/
 
+
+Cosas a mejorar:
+ - Implementación de JWT debido a la categoria de los datos. 
+ 
+ 
 #### *Calculos auxiliares para realizar la triangulación.*
 
 La triangulación consiste en buscar el punto de intersección entre tres esferas. 
